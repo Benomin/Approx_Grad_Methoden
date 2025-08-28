@@ -6,7 +6,7 @@ class ApproxAttribution():
         self.device = next(self.model.parameters()).device
 
     def grad_approx(self,h,X,target=0):
-        print("Grad Approx")
+        #print("Grad Approx")
         ret = []
         for elem in X:
             for index, value in np.ndenumerate(elem):
@@ -17,7 +17,10 @@ class ApproxAttribution():
                 #test
                 ret.append(res)
                 #print(res)
-        return np.array(ret)[:,0,target]
+        ret = np.array(ret)
+        if ret.ndim == 1:
+            return ret
+        return ret[:,0,target]
 
     def int_grad_approx(self,h,X,baseline = 0,riemann_step = 50,target=0):
         ret = []
@@ -40,8 +43,9 @@ class ApproxAttribution():
 
 
                 ret.append(val)
-
-
+        ret = np.array(ret)
+        if ret.ndim == 1:
+            return ret
         return np.array(ret)[:,0,target]
 
     def grad_x_i_approx(self,h,X,target=0):
@@ -55,6 +59,9 @@ class ApproxAttribution():
 
 
                 ret.append(-1 * value * ((self.model(new) - self.model(elem))/h).detach().cpu().numpy())
+        ret = np.array(ret)
+        if ret.ndim == 1:
+            return ret
         return np.array(ret)[:,0,target]
 
 
